@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js" integrity="sha512-kp7YHLxuJDJcOzStgd6vtpxr4ZU9kjn77e6dBsivSz+pUuAuMlE2UTdKB7jjsWT84qbS8kdCWHPETnP/ctrFsA==" crossorigin="anonymous"></script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <title>Todo</title>
+    <style>
+      * { box-sizing: border-box; }
+      html,
+      body,
+      #root {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'system-ui';
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .done {
+        background: green;
+      }
+
+      .wrapper {
+        width: 40%;
+        margin: auto;
+        padding: 40px 0;
+      }
+
+      hr {
+        margin: 4rem 0;
+      }
+
+      .todo {
+        border-radius: 8px;
+        background: white;
+        box-shadow: 4px 4px 20px hsla(0, 0%, 0%, 0.2);
+        padding: 0.5rem 1rem;
+        margin: 1rem 0;
+        cursor: pointer;
+      }
+
+      .todo span {
+        color: rgb(163, 163, 163);
+      }
+
+      .todo p {
+        font-size: 1.6rem;
+        color: #5352ed;
+      }
+
+      .todo.done p {
+        color: rgb(163, 163, 163);
+        text-decoration: line-through;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const rootEl = document.getElementById('root');
+
+      const TodoList = () => {
+        const [todos, setTodos] = React.useState([
+          {
+            id: 1,
+            text: 'Faire la vaisselle',
+            createdAt: '2020-03-10',
+            status: 'ongoing'
+          },
+          {
+            id: 2,
+            text: 'Sortir le chien',
+            createdAt: '2020-03-02',
+            status: 'ongoing'
+          },
+          {
+            id: 3,
+            text: 'Apprendre React',
+            createdAt: '2020-02-24',
+            status: 'ongoing'
+          }
+        ]);
+
+        const [doneTodos, setDoneTodos] = React.useState([]);
+
+        const handleClick = (todo) => {
+          const untouchedTodos = todos.filter((currTodo) => currTodo.id !== todo.id);
+          setTodos([...untouchedTodos]);
+          setDoneTodos([...doneTodos, {
+            ...todo,
+            status: 'done'
+          }])
+        };
+
+        const listItems = todos.map((todo) => {
+          return (
+            <li 
+              key={todo.id}
+              onClick={() => handleClick(todo)}
+              className="todo">
+              <span>{new Date(todo.createdAt).toLocaleDateString()}</span>
+              <p>{todo.text}</p>
+            </li>
+          );
+        });
+
+        const listDone = doneTodos.map((todo) => {
+          return (
+            <li 
+              key={todo.id}
+              className="todo done">
+              <span>{new Date(todo.createdAt).toLocaleDateString()}</span>
+              <p>{todo.text}</p>
+            </li>
+          );
+        });
+      
+        const todoList = listItems.length > 0 ? <ul>{listItems}</ul> : <p>Il n'y a aucun todo!</p>;
+        const doneTodoList = listDone.length > 0 ? <ul>{listDone}</ul> : <p>Il n'y a aucun todo terminé!</p>;;
+
+        return (
+          <div className="wrapper">
+            <h2>Mes todo</h2>
+            {todoList}
+            <hr />
+            {doneTodoList}
+          </div>
+        );
+      };
+
+      ReactDOM.render(<TodoList />, rootEl);
+    </script>
+  </body>
+</html>
